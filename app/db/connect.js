@@ -5,5 +5,5 @@ const URI = `mongodb+srv://root:${dbPassword}@cluster0.9jsug.mongodb.net/${dbNam
 
 
 mongoose.connect(URI, {useNewUrlParser: true, useUnifiedTopology: true}, () => {
-    console.log('admin db connect!')
+    console.log('db connect!')
 });
