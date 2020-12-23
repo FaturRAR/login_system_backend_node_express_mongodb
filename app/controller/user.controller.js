@@ -15,6 +15,19 @@ exports.getAllUser = (req, res) => {
         })
 }
 
+// get one user
+exports.getOne = (req, res) => {
+    const email = req.params.email;
+    // find user
+    User.findOne({email})
+        .then(user => {
+            res.send(user)
+        })
+        .catch(err => {
+            res.send(err)
+        })
+}
+
 // Register
 exports.register = (req,res) => {
     const {name, email, password} = req.body;

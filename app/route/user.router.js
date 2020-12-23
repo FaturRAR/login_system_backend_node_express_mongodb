@@ -9,6 +9,8 @@ module.exports = (app) => {
 
     router.get('/user', verify, User.getAllUser)
 
+    router.get('/user/:email', User.getOne)
+
     router.post('/register', User.register)
 
     router.post('/login', User.login)
@@ -18,4 +20,4 @@ module.exports = (app) => {
     router.delete('/:id', verify, User.delete);
     
     app.use('/api', router)
-}
+} 
