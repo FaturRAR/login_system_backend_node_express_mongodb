@@ -1,10 +1,14 @@
+if(process.env.NODE_ENV !== 'production'){
+    require('dotenv').config()
+}
+
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT;
 const cors = require('cors');
 
 const corsOptions = {
-    origin: 'http://localhost:8081',
+    origin: process.env.CLIENT,
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 

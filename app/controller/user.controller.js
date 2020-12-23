@@ -3,24 +3,50 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
+// Get all user
+exports.getAllUser = (req, res) => {
+    // find all user 
+    User.find()
+        .then(data => {
+            res.send(data)
+        })
+        .catch(err => {
+            res.send(err)
+        })
+}
+
 // Register
 exports.register = (req,res) => {
     const {name, email, password} = req.body;
-    
-    bcrypt.hash(password, 10, (err, hash) => {
-        // Save new user to database 
-        User.create({
-            name,
-            email,
-            password: hash
-        })
-        .then(response => {
-            res.send(response);
+
+    // find email for checking exist or not
+    User.findOne({email})
+        .then(user => {
+            // if user exist send message
+            if(user){
+                res.send({message: 'user with that email has been taken'})
+            } else {
+                // hash password if user with that email not found
+                bcrypt.hash(password, 10, function(err, hash) {
+                    const data = {
+                        name,
+                        email,
+                        password: hash
+                    }
+                    User.create(data)
+                        .then(data => {
+                            res.send(data)
+                        })
+                        .catch(err => {
+                            res.send(err)
+                        })
+                })
+            }
         })
         .catch(err => {
-            res.send(err).status(500);
-        });
-    })
+            res.send(err);
+        })
+    
 }
 
 
@@ -32,6 +58,7 @@ exports.login = (req,res) => {
     User.findOne({email})
         .then(user => {
             if(user){
+                // check password
                 bcrypt.compare(password, user.password, (err, result) => {
                     if(err) return res.send(err)
                     if(result){
@@ -67,21 +94,29 @@ exports.login = (req,res) => {
         })
 }
 
-// Get all user
-exports.getAllUser = (req, res) => {
-    User.find()
-        .then(data => {
-            res.send(data)
-        })
-        .catch(err => {
-            res.send(err)
-        })
+// update data for change password or something
+exports.changePassword = (req, res) => {
+    const id = req.params.id
+    const password = req.body.password;
+
+    bcrypt.hash(password, 10, function(err, hash) {
+        User.findByIdAndUpdate(id, {password: hash})
+            .then(data => {
+                res.send(data)
+            })
+            .catch(err => {
+                res.send(err)
+            })
+    })
 }
+
 
 // Delete user 
 exports.delete = (req, res) => {
+    // get id on params
     const id = req.params.id;
 
+    // find user and delete
     User.findByIdAndDelete(id)
         .then(response => {
             res.send(response);

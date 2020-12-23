@@ -13,6 +13,8 @@ module.exports = (app) => {
 
     router.post('/login', User.login)
 
+    router.put('/password/:id', User.changePassword)
+
     router.delete('/:id', verify, User.delete);
     
     app.use('/api', router)
